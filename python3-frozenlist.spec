@@ -5,22 +5,25 @@
 
 %define		module	frozenlist
 Summary:	A list-like structure which implements collections.abc.MutableSequence
+Summary(pl.UTF-8):	Podobna do listy struktura implementująca collections.abc.MutableSequence
 Name:		python3-%{module}
-Version:	1.2.0
+Version:	1.3.0
 Release:	1
 License:	Apache v2.0
 Group:		Libraries/Python
+#Source0Download: https://pypi.org/simple/frozenlist/
 Source0:	https://files.pythonhosted.org/packages/source/f/frozenlist/%{module}-%{version}.tar.gz
-# Source0-md5:	8f1851ef871d95a15ebcf20255c12f6d
+# Source0-md5:	e65d870bd189ba3c21ab7eb10eab22b7
 URL:		https://pypi.org/project/frozenlist/
-BuildRequires:	python3-devel >= 1:3.2
-BuildRequires:	python3-setuptools
+BuildRequires:	python3-devel >= 1:3.7
+BuildRequires:	python3-setuptools >= 1:46.4.0
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.714
 %if %{with doc}
+BuildRequires:	python3-aiohttp_theme
 BuildRequires:	sphinx-pdg-3
 %endif
-Requires:	python3-modules >= 1:3.2
+Requires:	python3-modules >= 1:3.7
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -28,6 +31,12 @@ frozenlist.FrozenList is a list-like structure which implements
 collections.abc.MutableSequence. The list is mutable until
 FrozenList.freeze is called, after which list modifications
 raise RuntimeError.
+
+%description -l pl.UTF-8
+frozenlist.FrozenList to podobna do listy struktura implementująca
+collections.abc.MutableSequence. Lista jest modyfikowalna do czasu
+wywołania FrozenList.freeze, po którym próby modyfikacji rzucą
+wyjątek RuntimeError.
 
 %package apidocs
 Summary:	API documentation for Python %{module} module
@@ -47,13 +56,13 @@ Dokumentacja API modułu Pythona %{module}.
 %py3_build
 
 %if %{with tests}
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
 %{__python3} -m pytest tests
 %endif
 
 %if %{with doc}
 %{__make} -C docs html \
 	SPHINXBUILD=sphinx-build-3
-rm -rf docs/_build/html/_sources
 %endif
 
 %install
@@ -70,6 +79,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{py3_sitedir}/%{module}
 %{py3_sitedir}/%{module}/*.py
 %{py3_sitedir}/%{module}/*.pyi
+%{py3_sitedir}/%{module}/*.pyx
 %{py3_sitedir}/%{module}/py.typed
 %attr(755,root,root) %{py3_sitedir}/%{module}/*.so
 %{py3_sitedir}/%{module}/__pycache__
@@ -78,5 +88,5 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with doc}
 %files apidocs
 %defattr(644,root,root,755)
-%doc docs/_build/html/*
+%doc docs/_build/html/{_static,*.html,*.js}
 %endif
