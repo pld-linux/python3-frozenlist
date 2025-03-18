@@ -1,0 +1,10 @@
+--- frozenlist-1.5.0/docs/conf.py.orig	2024-10-23 06:58:38.000000000 +0200
++++ frozenlist-1.5.0/docs/conf.py	2025-03-19 00:19:51.998342081 +0100
+@@ -59,7 +59,6 @@
+     "sphinx.ext.viewcode",
+     "sphinx.ext.intersphinx",
+     # Third-party extensions:
+-    "sphinxcontrib.towncrier.ext",  # provides `towncrier-draft-entries` directive
+ ]
+ 
+ 

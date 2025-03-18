@@ -7,23 +7,31 @@
 Summary:	A list-like structure which implements collections.abc.MutableSequence
 Summary(pl.UTF-8):	Podobna do listy struktura implementująca collections.abc.MutableSequence
 Name:		python3-%{module}
-Version:	1.3.3
-Release:	3
+Version:	1.5.0
+Release:	1
 License:	Apache v2.0
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/frozenlist/
 Source0:	https://files.pythonhosted.org/packages/source/f/frozenlist/%{module}-%{version}.tar.gz
-# Source0-md5:	14e9ffd849c6a1dfa3c6b1fb1ff77b14
+# Source0-md5:	0882f528872840df39091fb5085e258a
+Patch0:		disable-towncrier.patch
 URL:		https://pypi.org/project/frozenlist/
-BuildRequires:	python3-devel >= 1:3.7
-BuildRequires:	python3-setuptools >= 1:46.4.0
+BuildRequires:	python3-Cython >= 3
+BuildRequires:	python3-build
+BuildRequires:	python3-devel >= 1:3.8
+BuildRequires:	python3-expandvars
+BuildRequires:	python3-installer
+BuildRequires:	python3-setuptools >= 1:47
+%if %{_ver_lt "%py3_ver" 3.11}
+BuildRequires:	python3-tomli
+%endif
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.714
+BuildRequires:	rpmbuild(macros) >= 2.044
 %if %{with doc}
 BuildRequires:	python3-aiohttp_theme
 BuildRequires:	sphinx-pdg-3
 %endif
-Requires:	python3-modules >= 1:3.7
+Requires:	python3-modules >= 1:3.8
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -51,9 +59,10 @@ Dokumentacja API modułu Pythona %{module}.
 
 %prep
 %setup -q -n %{module}-%{version}
+%patch -P0 -p1
 
 %build
-%py3_build
+%py3_build_pyproject
 
 %if %{with tests}
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
@@ -68,7 +77,7 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%py3_install
+%py3_install_pyproject
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -83,7 +92,7 @@ rm -rf $RPM_BUILD_ROOT
 %{py3_sitedir}/%{module}/py.typed
 %attr(755,root,root) %{py3_sitedir}/%{module}/*.so
 %{py3_sitedir}/%{module}/__pycache__
-%{py3_sitedir}/%{module}-%{version}-py*.egg-info
+%{py3_sitedir}/%{module}-%{version}.dist-info
 
 %if %{with doc}
 %files apidocs
