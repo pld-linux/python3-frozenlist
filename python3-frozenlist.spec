@@ -25,6 +25,7 @@ BuildRequires:	python3-setuptools >= 1:47
 %if %{_ver_lt "%py3_ver" 3.11}
 BuildRequires:	python3-tomli
 %endif
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 2.044
 %if %{with doc}
@@ -50,6 +51,7 @@ wyjątek RuntimeError.
 Summary:	API documentation for Python %{module} module
 Summary(pl.UTF-8):	Dokumentacja API modułu Pythona %{module}
 Group:		Documentation
+BuildArch:	noarch
 
 %description apidocs
 API documentation for Python %{module} module.
