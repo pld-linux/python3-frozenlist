@@ -7,16 +7,17 @@
 Summary:	A list-like structure which implements collections.abc.MutableSequence
 Summary(pl.UTF-8):	Podobna do listy struktura implementująca collections.abc.MutableSequence
 Name:		python3-%{module}
-Version:	1.5.0
+Version:	1.5.1
 Release:	1
 License:	Apache v2.0
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/frozenlist/
-Source0:	https://files.pythonhosted.org/packages/source/f/frozenlist/%{module}-%{version}.tar.gz
-# Source0-md5:	0882f528872840df39091fb5085e258a
+# Source0:	https://files.pythonhosted.org/packages/source/f/frozenlist/%{module}-%{version}.tar.gz
+Source0:	https://github.com/aio-libs/frozenlist/archive/57ce23807c0d08651106c9de0b78e525838f3fac.zip
+# Source0-md5:	1b50afd47f8eb56e34efdde796207b2b
 Patch0:		disable-towncrier.patch
 URL:		https://pypi.org/project/frozenlist/
-BuildRequires:	python3-Cython >= 3
+BuildRequires:	python3-Cython >= 3.0.12
 BuildRequires:	python3-build
 BuildRequires:	python3-devel >= 1:3.8
 BuildRequires:	python3-expandvars
@@ -60,8 +61,12 @@ API documentation for Python %{module} module.
 Dokumentacja API modułu Pythona %{module}.
 
 %prep
-%setup -q -n %{module}-%{version}
+#%%setup -q -n %{module}-%{version}
+%setup -q -n %{module}-57ce23807c0d08651106c9de0b78e525838f3fac
 %patch -P0 -p1
+
+# keep *.c files so debuginfo will pick it up
+sed -i -e 's#build_inplace: bool = False,#build_inplace: bool = True,#g' -e 's#build_inplace=False#build_inplace=True#g' packaging/pep517_backend/_backend.py
 
 %build
 %py3_build_pyproject
@@ -94,7 +99,7 @@ rm -rf $RPM_BUILD_ROOT
 %{py3_sitedir}/%{module}/py.typed
 %attr(755,root,root) %{py3_sitedir}/%{module}/*.so
 %{py3_sitedir}/%{module}/__pycache__
-%{py3_sitedir}/%{module}-%{version}.dist-info
+%{py3_sitedir}/%{module}-%{version}*.dist-info
 
 %if %{with doc}
 %files apidocs
