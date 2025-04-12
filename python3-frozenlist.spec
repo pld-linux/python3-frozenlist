@@ -23,6 +23,7 @@ BuildRequires:	python3-devel >= 1:3.8
 BuildRequires:	python3-expandvars
 BuildRequires:	python3-installer
 BuildRequires:	python3-setuptools >= 1:47
+BuildRequires:	unzip
 %if %{_ver_lt "%py3_ver" 3.11}
 BuildRequires:	python3-tomli
 %endif
