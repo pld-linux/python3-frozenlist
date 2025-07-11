@@ -7,34 +7,37 @@
 Summary:	A list-like structure which implements collections.abc.MutableSequence
 Summary(pl.UTF-8):	Podobna do listy struktura implementująca collections.abc.MutableSequence
 Name:		python3-%{module}
-Version:	1.5.1
+Version:	1.7.0
 Release:	1
 License:	Apache v2.0
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/frozenlist/
-# Source0:	https://files.pythonhosted.org/packages/source/f/frozenlist/%{module}-%{version}.tar.gz
-Source0:	https://github.com/aio-libs/frozenlist/archive/57ce23807c0d08651106c9de0b78e525838f3fac.zip
-# Source0-md5:	1b50afd47f8eb56e34efdde796207b2b
+Source0:	https://files.pythonhosted.org/packages/source/f/frozenlist/%{module}-%{version}.tar.gz
+# Source0-md5:	3820fe3685c2d9f544d7a0d4041c089a
 Patch0:		disable-towncrier.patch
 URL:		https://pypi.org/project/frozenlist/
-BuildRequires:	python3-Cython >= 3.0.12
+BuildRequires:	python3-Cython >= 3.1.1
 BuildRequires:	python3-build
-BuildRequires:	python3-devel >= 1:3.8
+BuildRequires:	python3-devel >= 1:3.9
 BuildRequires:	python3-expandvars
 BuildRequires:	python3-installer
 BuildRequires:	python3-setuptools >= 1:47
-BuildRequires:	unzip
-%if %{_ver_lt "%py3_ver" 3.11}
+%if "%{_ver_lt "%py3_ver" 3.11}" == "1"
 BuildRequires:	python3-tomli
+%endif
+%if %{with tests}
+BuildRequires:	python3-coverage >= 7.6.1
+BuildRequires:	python3-pytest >= 7.4.3
+BuildRequires:	python3-pytest-cov >= 4.1.0
 %endif
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 2.044
 %if %{with doc}
-BuildRequires:	python3-aiohttp_theme
-BuildRequires:	sphinx-pdg-3
+BuildRequires:	python3-aiohttp_theme >= 0.1.6
+BuildRequires:	sphinx-pdg-3 >= 7.2.6
 %endif
-Requires:	python3-modules >= 1:3.8
+Requires:	python3-modules >= 1:3.9
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -62,8 +65,7 @@ API documentation for Python %{module} module.
 Dokumentacja API modułu Pythona %{module}.
 
 %prep
-#%%setup -q -n %{module}-%{version}
-%setup -q -n %{module}-57ce23807c0d08651106c9de0b78e525838f3fac
+%setup -q -n %{module}-%{version}
 %patch -P0 -p1
 
 # keep *.c files so debuginfo will pick it up
@@ -73,6 +75,7 @@ sed -i -e 's#build_inplace: bool = False,#build_inplace: bool = True,#g' -e 's#b
 %py3_build_pyproject
 
 %if %{with tests}
+# pytest_cov preloaded via -p option in pytest.ini
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
 %{__python3} -m pytest tests
 %endif
