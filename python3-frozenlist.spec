@@ -7,13 +7,13 @@
 Summary:	A list-like structure which implements collections.abc.MutableSequence
 Summary(pl.UTF-8):	Podobna do listy struktura implementująca collections.abc.MutableSequence
 Name:		python3-%{module}
-Version:	1.7.0
+Version:	1.8.0
 Release:	1
 License:	Apache v2.0
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/frozenlist/
 Source0:	https://files.pythonhosted.org/packages/source/f/frozenlist/%{module}-%{version}.tar.gz
-# Source0-md5:	3820fe3685c2d9f544d7a0d4041c089a
+# Source0-md5:	3d8350ebe62603b7be5f516292c7aa6c
 Patch0:		disable-towncrier.patch
 URL:		https://pypi.org/project/frozenlist/
 BuildRequires:	python3-Cython >= 3.1.1
